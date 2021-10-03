@@ -23,6 +23,7 @@ class Main : JavaPlugin(){
         internal lateinit var console: ConsoleCommandSender
         val arrows:MutableMap<Arrow,BukkitRunnable> = mutableMapOf()
         var arrowSpeed:Float = 1.0f
+        var arrowLoadDistance:Int = 80
     }
 
     override fun onEnable() {
@@ -40,6 +41,8 @@ class Main : JavaPlugin(){
         val c = plugin.config(sender,"config",DefaultConfigResource(plugin,"config.yml"))
         val arrowSpeed:Float = c.get("ArrowSpeed", ConfigDataType.Float,false)?:0.0f
         Main.arrowSpeed = arrowSpeed
+        val arrowLoadDistance:Int = c.get("ArrowLoadDistance", ConfigDataType.Int,false)?:80
+        Main.arrowLoadDistance = arrowLoadDistance
         sender.sendMessage("${ChatColor.GRAY}[${plugin.name}]${ChatColor.AQUA} 設定を読み込みました。")
     }
 
