@@ -7,6 +7,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.0.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.4.0"
     id("com.github.ben-manes.versions") version "0.39.0"
+    id("dev.s7a.gradle.minecraft.server") version "1.0.1"
 }
 
 version = "1.0.0"
@@ -35,6 +36,21 @@ tasks.withType<ShadowJar> {
 configure<BukkitPluginDescription> {
     name = project.name
     version = project.version.toString()
-    main = "sample.Main" // TODO JavaPlugin を継承したクラスとパッケージを入力する
-    apiVersion = "1.17"
+    main = "com.github.frango28.mcplugin.homingarrow.Main"
+    author= "Frango28"
+}
+
+task<dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask>("buildAndLaunchServer") {
+    dependsOn("shadowJar") // ビルドタスク (build, jar, shadowJar, ...)
+    doFirst {
+        copy {
+            from(buildDir.resolve("libs/${project.name}-${project.version}.jar")) // build/libs/example.jar
+            into(buildDir.resolve("MinecraftPaperServer/plugins")) // build/MinecraftPaperServer/plugins
+        }
+    }
+    jvmArgument.addAll("-Xms6G", "-Xmx6G")
+    jarUrl.set("https://papermc.io/api/v1/paper/1.17.1/latest/download")
+    jarName.set("server.jar")
+    serverDirectory.set(buildDir.resolve("MinecraftPaperServer")) // build/MinecraftPaperServer
+    nogui.set(false)
 }
